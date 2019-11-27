@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace ProgramManagerUI
 {
@@ -49,9 +51,16 @@ namespace ProgramManagerUI
             }
 
             //app.UseHttpsRedirection();
-            //app.UseStaticFiles();
+            app.UseStaticFiles();
+
+            //Added this to read Files Folder 
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files")),
+                RequestPath = new PathString("/Files")
+            });
             //app.UseCookiePolicy();
-           // app.UseMvc();
+            // app.UseMvc();
             //app.UseMvc(routes =>
             //{
             //    routes.MapRoute(

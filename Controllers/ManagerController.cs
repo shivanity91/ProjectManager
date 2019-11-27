@@ -1,42 +1,57 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ProjectManager.Common;
 using ProjectManager.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
+using HttpDeleteAttribute = Microsoft.AspNetCore.Mvc.HttpDeleteAttribute;
+using HttpGetAttribute = Microsoft.AspNetCore.Mvc.HttpGetAttribute;
+using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
+using HttpPutAttribute = Microsoft.AspNetCore.Mvc.HttpPutAttribute;
+using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
 
 namespace ProjectManager.Controllers
 {
-    [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    //[RoutePrefix("api/Manager/")]
     [ApiController]
     public class ManagerController : ControllerBase
     {
+        private readonly IHostingEnvironment _hostingEnvironment;
 
+        public ManagerController(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
+
+        /// <summary>
+        /// On load of landing page, this action will get called.
+        /// </summary>
+        /// <returns>From ProjectDetails.json, will get list of existing project details</returns>
         [HttpGet]
         public ManagerModel GetAllProjects()
         {
-            string fileName = "ProjectDetails.json";
-            // string path = String.Format("{0}Files\\", AppDomain.CurrentDomain.BaseDirectory);
-            // string[] fileData = Directory.GetFiles(@"Files\", fileName);//
-            string fileData = System.IO.File.ReadAllText(@"Files\" + fileName);
+            string contentRootPath = _hostingEnvironment.ContentRootPath;
+            var fileData = System.IO.File.ReadAllText(contentRootPath + "/Files/ProjectDetails.json");
             ManagerModel data = JsonConvert.DeserializeObject<ManagerModel>(fileData);
             return data;
         }
 
+
+        /// <summary>
+        /// To create a new project. Project will be created in local app directory folder Files//
+        /// </summary>
+        /// <param name="model"></param>
         [HttpPost]
         public void CreateProject(ProjectInfo model)
         {
             try
             {
-                string fileName = "ProjectDetails.json";
-                //string path = String.Format("{0}Files\\", AppDomain.CurrentDomain.BaseDirectory);
-                //string fileData = System.IO.File.ReadAllText(path + fileName);
-                string fileData = System.IO.File.ReadAllText(@"Files\" + fileName);
+                string contentRootPath = _hostingEnvironment.ContentRootPath;
+                var fileData = System.IO.File.ReadAllText(contentRootPath + "/Files/ProjectDetails.json");
                 ManagerModel list = JsonConvert.DeserializeObject<ManagerModel>(fileData);
                 var source = model.SourcePath.Replace(@"/", @"\\");
                 list.data.Add(new ProjectInfo
@@ -51,7 +66,7 @@ namespace ProjectManager.Controllers
                 });
 
                 CommonClass addObject = new CommonClass();
-                addObject.AddOrUpdateProject(source, model, list);
+                addObject.AddOrUpdateProject(source, model, list, contentRootPath);
             }
             catch (Exception e)
             {
@@ -64,37 +79,61 @@ namespace ProjectManager.Controllers
         }
 
 
-
+        /// <summary>
+        /// To delete an existing project
+        /// </summary>
+        /// <param name="model"></param>        
         [HttpDelete]
         public void Delete(ProjectInfo model)
         {
-            string fileName = "ProjectDetails.json";
-            //string path = String.Format("{0}Files\\", AppDomain.CurrentDomain.BaseDirectory);
-            //string fileData = System.IO.File.ReadAllText(path + fileName);
-            string fileData = System.IO.File.ReadAllText(@"Files\" + fileName);
+            string contentRootPath = _hostingEnvironment.ContentRootPath;
+            var fileData = System.IO.File.ReadAllText(contentRootPath + "/Files/ProjectDetails.json");
             var list = JsonConvert.DeserializeObject<ManagerModel>(fileData);
             var itemToRemove = list.data.Single(r => r.ProjectName == model.ProjectName);
             list.data.Remove(itemToRemove);
             var jsonToOutput = JsonConvert.SerializeObject(list, Formatting.Indented);
-            System.IO.File.WriteAllText(Path.Combine(@"Files\", fileName), jsonToOutput.ToString());
+            var newPath = String.Format("{0}\\Files\\ProjectDetails.json", contentRootPath);
+            System.IO.File.WriteAllText(newPath, jsonToOutput.ToString());
         }
 
+        /// <summary>
+        /// To update an existing project
+        /// </summary>
+        /// <param name="model"></param>
         [HttpPut]
         public void Put(ProjectInfo model)
         {
-            string fileName = "ProjectDetails.json";
+            string contentRootPath = _hostingEnvironment.ContentRootPath;
+            var fileData = System.IO.File.ReadAllText(contentRootPath + "/Files/ProjectDetails.json");
+            //string fileName = "ProjectDetails.json";
             //string path = String.Format("{0}Files\\", AppDomain.CurrentDomain.BaseDirectory);
             //string fileData = System.IO.File.ReadAllText(path + fileName);
-            string fileData = System.IO.File.ReadAllText(@"Files\" + fileName);
             ManagerModel list = JsonConvert.DeserializeObject<ManagerModel>(fileData);
             var source = model.SourcePath.Replace(@"/", @"\\");
             var itemToUpdate = list.data.Single(r => r.ProjectName == model.ProjectName);
             itemToUpdate.ModifiedBy = model.ModifiedBy;
             itemToUpdate.ModifiedOn = DateTime.Now;
             itemToUpdate.SourcePath = model.SourcePath;
+            itemToUpdate.Comments = model.Comments;
             CommonClass addObject = new CommonClass();
-            addObject.AddOrUpdateProject(source, model, list);
+            addObject.AddOrUpdateProject(source, model, list, contentRootPath);
         }
+
+        /// <summary>
+        /// To download the selected project
+        /// </summary>
+        /// <param name="ProjectName"></param>
+        /// <returns></returns>
+        [Route("DownloadProject")]
+        [HttpGet]
+        public string DownloadProject([FromUri]string ProjectName)
+        {
+            string contentRootPath = _hostingEnvironment.ContentRootPath;
+            string fileName = CommonClass.DownloadFiles(ProjectName, contentRootPath);
+            return fileName;
+        }
+
 
     }
 }
+

@@ -1,127 +1,4 @@
-﻿﻿
-    <head>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
-        <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.min.js"></script>
-        <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
-        <link rel="stylesheet" src="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" />
-        <link rel="stylesheet" src="https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css" />
-        <link rel="stylesheet" src="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css" />
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
-
-        <style type="text/css">
-            body {
-                color: #404E67;
-                background: #F5F7FA;
-                font-family: 'Open Sans', sans-serif;
-            }
-
-            .table-wrapper {
-                width: 700px;
-                margin: 30px auto;
-                background: #fff;
-                padding: 20px;
-                box-shadow: 0 1px 1px rgba(0,0,0,.05);
-            }
-
-            .table-title {
-                padding-bottom: 10px;
-                margin: 0 0 10px;
-            }
-
-                .table-title h2 {
-                    margin: 6px 0 0;
-                    font-size: 22px;
-                }
-
-                .table-title .add-new {
-                    float: right;
-                    height: 30px;
-                    font-weight: bold;
-                    font-size: 12px;
-                    text-shadow: none;
-                    min-width: 100px;
-                    border-radius: 50px;
-                    line-height: 13px;
-                }
-
-                    .table-title .add-new i {
-                        margin-right: 4px;
-                    }
-
-            table.table {
-                table-layout: fixed;
-            }
-
-                table.table tr th, table.table tr td {
-                    border-color: #e9e9e9;
-                }
-
-                table.table th i {
-                    font-size: 13px;
-                    margin: 0 5px;
-                    cursor: pointer;
-                }
-
-                table.table th:last-child {
-                    width: 100px;
-                }
-
-                table.table td a {
-                    cursor: pointer;
-                    display: inline-block;
-                    margin: 0 5px;
-                    min-width: 24px;
-                }
-
-                    table.table td a.add {
-                        color: #27C46B;
-                    }
-
-                    table.table td a.edit {
-                        color: #FFC107;
-                    }
-
-                    table.table td a.delete {
-                        color: #E34724;
-                    }
-
-                table.table td i {
-                    font-size: 19px;
-                }
-
-
-                table.table .form-control {
-                    height: 32px;
-                    line-height: 32px;
-                    box-shadow: none;
-                    border-radius: 2px;
-                }
-
-                    table.table .form-control.error {
-                        border-color: #f50000;
-                    }
-
-                table.table td .add {
-                    display: none;
-                }
-
-            .panel {
-                margin-top: 6%;
-            }
-
-            /*.modal-dialog {
-                display: inline-flex;
-            }*/
-        </style>
-        <script>
-
+﻿
             $(document).ready(function () {
 
                 BindData();
@@ -203,7 +80,7 @@
                                     dataType: 'json',
                                     success: function (response) {
                                         var items = response.data
-                                        var createHTML = '<form id="UpdateForm"><div class="form-group"><label for="txtProjectName">Project Name</label> <input type="text" disabled class="form-control" id="txtProjectName" placeholder="Enter Project Name...">  </div>    <div class="form-group"><label for="txtModifiedBy">Modified By</label><input type="text" class="form-control" id="txtModifiedBy" placeholder="Modified By...">    </div>    <div class="form-group">        <label for="txtComment">Comment</label>        <textarea class="form-control" type="text" id="txtComment" placeholder="Enter the Comment here..." />    </div>     <div class="form-group"> <label for="sourcePath">Source Path</label> <input type="text" class="form-control" id="sourcePath" placeholder="Enter Source Path..." required> </div>   <button type="submit" class="btn btn-primary" id="btnEdit">Submit</button></form>';//$(template); //type="file" class="form-control-file"
+                                        var createHTML = '<form id="UpdateForm"><div class="form-group"><label for="txtProjectName">Project Name</label> <input type="text" disabled class="form-control" id="txtProjectName" placeholder="Enter Project Name...">  </div>    <div class="form-group"><label for="txtModifiedBy">Modified By</label><input type="text" class="form-control" id="txtModifiedBy" placeholder="Modified By...">    </div>    <div class="form-group">        <label for="txtComment">Comment</label>        <textarea class="form-control" type="text" id="txtComment" placeholder="Enter the Comment here..." />    </div>    <div class="form-group"> <label for="sourcePath">Source Path</label> <input type="text" class="form-control" id="sourcePath" placeholder="Enter Source Path..." required> </div>    <button type="submit" class="btn btn-primary" id="btnEdit">Submit</button></form>';//$(template); //type="file" class="form-control-file"
                                         var $bootBox = bootbox.dialog({
                                             message: createHTML,
                                             title: "Edit Project",
@@ -269,7 +146,7 @@
 
 
                 $("#addProject").click(function () {
-                    var createHTML = '<form id="addForm"><div class="form-group"><label for="txtProjectName">Project Name</label><input type="text" class="form-control" id="txtProjectName" placeholder="Enter Project Name..." required/></div><div class="form-group"><label for="txtCreatedBy">Author</label><input type="text" class="form-control" id="txtCreatedBy" placeholder="Created By..." required/></div><div class="form-group"><label for="txtComment">Comment</label><textarea class="form-control" type="text" id="txtComment" placeholder="Enter the Comment here..." /></div><div class="form-group"><label for="sourcePath">Source Path</label><input type="text" class="form-control" id="sourcePath" placeholder="Enter Source Path..." required></div><button class="btn btn-primary" type="submit" id="btnAdd">Submit</input></form>';
+                    var createHTML = '<form id="addForm"><div class="form-group"><label for="txtProjectName">Project Name</label><input type="text" class="form-control" id="txtProjectName" placeholder="Enter Project Name..." required/></div><div class="form-group"><label for="txtCreatedBy">Author</label><input type="text" class="form-control" id="txtCreatedBy" placeholder="Created By..." required/></div><div class="form-group"><label for="txtComment">Comment</label><textarea class="form-control" type="text" id="txtComment" placeholder="Enter the Comment here..." /></div><div class="form-group"><label for="sourcePath">Source Path</label><input type="text" id="sourcePath" required/></div><button class="btn btn-primary" type="submit" id="btnAdd">Submit</input></form>';
                     var $bootBox = bootbox.dialog({
                         message: createHTML,
                         title: "Create Project",
@@ -298,7 +175,6 @@
                             type: 'POST',
                             data: JSON.stringify(postData),
                             success: function () {
-                                bootbox.alert("added successfully.");
                                 $('.AddStyle').remove();
                                 $('.modal-backdrop').remove();
                                 BindData();
@@ -313,25 +189,3 @@
                     }
                 });
             });
-
-        </script>
-    </head>
-
-<div class="panel">
-    <div>
-        <button type="submit" class="btn btn-primary" style="float: right;margin: 2%;" id="addProject">Add Project</button>
-
-    </div>   <!--en dof panel-heading -->
-    <div class="panel-body">
-        <table class="table table-bordered" id="Table">
-            <tr>
-                <th>Name</th>
-                <th>Comments</th>
-                <th>ModifiedBy</th>
-                <th>ModifiedOn</th>
-                <th>Actions</th>
-            </tr>   <!--end of table-row -->
-        </table>   <!--end of table -->
-    </div> <!--end of Panel-body -->
-
-</div> <!--end of Panel -->
